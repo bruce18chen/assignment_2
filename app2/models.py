@@ -4,6 +4,18 @@ from django.db import models
 from django.db import models
 from django.conf import settings
 
+
+class Topic(models.Model):
+    """
+    Represents a topic for a blog post
+    """
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(default='default-slug')
+
+    def __str__(self):
+        return self.name
+
+
 class Post(models.Model):
     """
     Represents a blog post
@@ -16,7 +28,7 @@ class Post(models.Model):
     ]
     title = models.CharField(max_length=255)
 
-
+    topics = models.ManyToManyField(Topic, related_name='posts')
 
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)  # Sets on create
@@ -55,16 +67,21 @@ class Post(models.Model):
         return self.title
 
 
+
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
+    post = models.ForeignKey('Post', related_name='comments', on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    email = models.EmailField(default="default@example.com")
     comment = models.TextField(max_length=400)
+    approved = models.BooleanField(default=False)
     created_on = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['created_on']
 
     def __str__(self):
         return self.comment[:60]
+
 
 

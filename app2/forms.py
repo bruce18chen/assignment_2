@@ -6,7 +6,7 @@ from .models import Comment
 class CommentForm(ModelForm):
     class Meta:
         model = Comment
-        fields = ['name', 'comment']
+        fields = ['name', 'email', 'comment']
 
     def __init__(self, *args, **kwargs):
         """Save the request with the form so it can be accessed in clean_*()"""
