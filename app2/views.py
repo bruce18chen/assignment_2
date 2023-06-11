@@ -24,6 +24,7 @@ class PostDisplay(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['comments'] = self.object.comments.filter(approved=True)
         context['form'] = CommentForm()
         return context
 

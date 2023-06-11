@@ -1,10 +1,22 @@
 from django.contrib import admin
-from . import models
 from .models import Post, Comment, Topic
 
-class CommentInline(admin.StackedInline):
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'post', 'created_on', 'approved')
+    list_filter = ('approved',)
+    search_fields = ('name', 'email', 'comment')
+    readonly_fields = ('name', 'email', 'comment')
+
+
+admin.site.register(Comment, CommentAdmin)
+class CommentInline(admin.TabularInline):
     model = Comment
     extra = 0
+    readonly_fields = ('name', 'email', 'comment')
+    fields = ('name', 'email', 'comment', 'approved')
+
+
 
 class PostAdmin(admin.ModelAdmin):
     list_display = (
@@ -20,7 +32,6 @@ class PostAdmin(admin.ModelAdmin):
     inlines = [
         CommentInline,
     ]
-    prepopulated_fields = {'slug': ('title',)}
     search_fields = (
         'title',
         'author__username',
@@ -34,6 +45,18 @@ class PostAdmin(admin.ModelAdmin):
     display_topics.short_description = 'Topics'
 
 
-admin.site.register(models.Post, PostAdmin)
+class TopicAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug')
 
-admin.site.register(Topic)
+
+admin.site.register(Post, PostAdmin)
+admin.site.register(Topic, TopicAdmin)
+
+
+
+
+
+
+
+
+
